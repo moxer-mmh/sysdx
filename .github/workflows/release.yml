@@ -57,6 +57,7 @@ jobs:
           files: "**/*.tar.gz*"
 
   crates-io:
+    if: secrets.CARGO_REGISTRY_TOKEN != ''
     name: Publish crates.io
     needs: release
     runs-on: ubuntu-latest
