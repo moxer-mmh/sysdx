@@ -122,21 +122,18 @@ If you use a terminal theme manager (wallust, pywal, etc.), you can leave the `[
 
 To set exact hex colors from your palette, copy the values into `[colors]`. This gives pixel-perfect matching regardless of terminal.
 
-## Layout
+## Screenshots
 
-```
-┌─────────────────────┬──────────────────────────────┐
-│  sysdx [USER] (42)  │  Status                      │
-│                     │  Unit        pipewire.service │
-│ ● pipewire.service  │  Active      active (running) │
-│ ● wireplumber       │  Load        loaded           │
-│ ○ bluetooth         ├──────────────────────────────┤
-│ ✗ cups.service      │  Output                      │
-│   ...               │  Apr 23 14:30:01 pipewire...  │
-│                     │  Apr 23 14:30:01 pipewire...  │
-│  / filter_          │  ...                         │
-└─────────────────────┴──────────────────────────────┘
-```
+<table>
+  <tr>
+    <td><img src="assets/screenshot-1.png" alt="sysdx system units" width="100%"/></td>
+    <td><img src="assets/screenshot-2.png" alt="sysdx filtered view" width="100%"/></td>
+  </tr>
+  <tr>
+    <td><img src="assets/screenshot-3.png" alt="sysdx status panel" width="100%"/></td>
+    <td><img src="assets/screenshot-4.png" alt="sysdx catppuccin theme" width="100%"/></td>
+  </tr>
+</table>
 
 ## Contributing
 
