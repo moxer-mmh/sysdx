@@ -17,12 +17,9 @@ pub fn draw(frame: &mut Frame, app: &mut App) {
     );
     frame.render_widget(bg, area);
 
-    match app.mode {
-        Mode::LogView => {
-            status_panel::render_log_view(frame, app, area);
-            return;
-        }
-        _ => {}
+    if app.mode == Mode::LogView {
+        status_panel::render_log_view(frame, app, area);
+        return;
     }
 
     let panes = layout::split(area, app.config.display.list_width_pct);

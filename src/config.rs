@@ -3,7 +3,7 @@ use dirs::config_dir;
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 #[serde(default)]
 pub struct Config {
     pub display: DisplayOptions,
@@ -55,15 +55,6 @@ pub struct Colors {
     pub header: Option<String>,
 }
 
-impl Default for Config {
-    fn default() -> Self {
-        Self {
-            display: DisplayOptions::default(),
-            keybinds: KeyBinds::default(),
-            colors: Colors::default(),
-        }
-    }
-}
 
 impl Default for DisplayOptions {
     fn default() -> Self {
