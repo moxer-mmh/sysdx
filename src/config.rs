@@ -55,7 +55,6 @@ pub struct Colors {
     pub header: Option<String>,
 }
 
-
 impl Default for DisplayOptions {
     fn default() -> Self {
         Self {
