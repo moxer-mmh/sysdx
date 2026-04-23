@@ -1,0 +1,33 @@
+[package]
+name = "sysdx"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.75"
+description = "A systemd unit manager TUI"
+license = "MIT"
+repository = "https://github.com/moxer-mmh/sysdx"
+keywords = ["systemd", "tui", "linux", "systemctl"]
+categories = ["command-line-utilities"]
+readme = "README.md"
+
+[[bin]]
+name = "sysdx"
+path = "src/main.rs"
+
+[dependencies]
+ratatui = "0.29"
+crossterm = { version = "0.28", features = ["event-stream"] }
+tokio = { version = "1", features = ["full"] }
+serde = { version = "1", features = ["derive"] }
+toml = "0.8"
+nucleo-matcher = "0.3"
+nix = { version = "0.29", features = ["signal"] }
+anyhow = "1"
+thiserror = "2"
+dirs = "5"
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+strip = true

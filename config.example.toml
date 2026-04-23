@@ -1,0 +1,48 @@
+# sysdx configuration
+# Copy this file to ~/.config/sysdx/config.toml and edit as needed.
+# Any section or key can be omitted — defaults will be used.
+
+[display]
+# Number of journal lines shown in the right pane preview
+journal_lines = 50
+# Event poll interval in milliseconds (lower = more responsive, higher CPU)
+tick_rate_ms = 250
+# Show unit description alongside unit name in the list
+show_description = true
+# Left pane width as a percentage of the terminal width (20–70)
+list_width_pct = 40
+# strftime format for journal timestamps
+date_format = "%H:%M:%S"
+
+[keybinds]
+move_down    = "j"
+move_up      = "k"
+page_down    = "ctrl-d"
+page_up      = "ctrl-u"
+go_top       = "g"
+go_bottom    = "G"
+filter       = "/"
+action_menu  = "enter"
+switch_scope = "tab"
+open_logs    = "l"
+quit         = "q"
+
+[colors]
+# All values are hex color strings (#rrggbb).
+# Comment out any key to fall back to the terminal's ANSI palette.
+# This means theme managers like wallust work automatically when
+# no hex overrides are set — sysdx inherits whatever your terminal uses.
+
+background     = "#0a0a0f"
+surface        = "#1a1a2e"
+border         = "#8844ff"
+border_focused = "#00ff88"
+text           = "#e0e1e5"
+text_dim       = "#b4a7d6"
+selection_bg   = "#2a2a40"
+selection_fg   = "#ffffff"
+active         = "#00ff88"   # color for active units
+inactive       = "#b4a7d6"   # color for inactive units
+failed         = "#ff0088"   # color for failed units
+filter_bar     = "#ffaa00"
+header         = "#8844ff"
