@@ -15,17 +15,21 @@ jobs:
       matrix:
         include:
           - target: x86_64-unknown-linux-gnu
+            linker: ""
           - target: aarch64-unknown-linux-gnu
+            linker: aarch64-linux-gnu-gcc
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
         with:
           targets: ${{ matrix.target }}
       - uses: Swatinem/rust-cache@v2
-      - name: Install aarch64 linker
+      - name: Install aarch64 cross-compiler
         if: matrix.target == 'aarch64-unknown-linux-gnu'
         run: sudo apt-get install -y gcc-aarch64-linux-gnu
       - name: Build
+        env:
+          CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER: ${{ matrix.linker }}
         run: cargo build --release --target ${{ matrix.target }}
       - name: Package
         run: |
