@@ -125,9 +125,7 @@ fn merge_with_default(partial: toml::Value) -> Result<Config> {
 }
 
 fn merge_toml(base: &mut toml::Value, override_val: toml::Value) {
-    if let (toml::Value::Table(base_map), toml::Value::Table(override_map)) =
-        (base, override_val)
-    {
+    if let (toml::Value::Table(base_map), toml::Value::Table(override_map)) = (base, override_val) {
         for (k, v) in override_map {
             let entry = base_map.entry(k).or_insert(toml::Value::Boolean(false));
             if v.is_table() && entry.is_table() {

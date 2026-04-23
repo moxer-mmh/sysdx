@@ -176,8 +176,7 @@ impl App {
 
     fn refilter(&mut self) {
         self.visible_indices = filter::rank(&self.filter_query, &self.units.entries);
-        if !self.visible_indices.is_empty()
-            && !self.visible_indices.contains(&self.units.selected)
+        if !self.visible_indices.is_empty() && !self.visible_indices.contains(&self.units.selected)
         {
             self.units.selected = self.visible_indices[0];
             self.refresh_status_cache();
@@ -208,8 +207,7 @@ impl App {
             let scope = self.units.scope;
             match do_action(action, &name, scope) {
                 Ok(_) => {
-                    self.status_message =
-                        Some(format!("{} {} succeeded", action.label(), name));
+                    self.status_message = Some(format!("{} {} succeeded", action.label(), name));
                     self.units.refresh();
                     self.refilter();
                     self.refresh_status_cache();

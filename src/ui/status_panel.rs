@@ -38,10 +38,7 @@ pub fn render(frame: &mut Frame, app: &App, props_area: Rect, journal_area: Rect
                 label("Description"),
                 val(&e.description, theme.text_dim),
             ]),
-            Line::from(vec![
-                label("Load"),
-                val(&e.load_state, theme.text_dim),
-            ]),
+            Line::from(vec![label("Load"), val(&e.load_state, theme.text_dim)]),
             Line::from(vec![
                 label("Active"),
                 val(&e.active_state, active_color),
@@ -84,7 +81,12 @@ pub fn render(frame: &mut Frame, app: &App, props_area: Rect, journal_area: Rect
     } else {
         app.status_cache
             .lines()
-            .map(|l| Line::from(Span::styled(l.to_string(), Style::default().fg(theme.text_dim))))
+            .map(|l| {
+                Line::from(Span::styled(
+                    l.to_string(),
+                    Style::default().fg(theme.text_dim),
+                ))
+            })
             .collect()
     };
 
@@ -125,9 +127,7 @@ pub fn render_log_view(frame: &mut Frame, app: &App, area: Rect) {
     } else {
         app.journal_cache
             .iter()
-            .map(|l| {
-                Line::from(Span::styled(l.clone(), Style::default().fg(theme.text)))
-            })
+            .map(|l| Line::from(Span::styled(l.clone(), Style::default().fg(theme.text))))
             .collect()
     };
 

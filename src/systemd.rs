@@ -106,10 +106,7 @@ pub fn list_units(scope: Scope) -> Result<Vec<RawUnit>> {
         .context("failed to run systemctl")?;
 
     let stdout = String::from_utf8_lossy(&output.stdout);
-    let units = stdout
-        .lines()
-        .filter_map(parse_unit_line)
-        .collect();
+    let units = stdout.lines().filter_map(parse_unit_line).collect();
 
     Ok(units)
 }
@@ -131,7 +128,13 @@ fn parse_unit_line(line: &str) -> Option<RawUnit> {
     let sub = cols.next()?.to_string();
     let description = cols.collect::<Vec<_>>().join(" ");
 
-    Some(RawUnit { unit, load, active, sub, description })
+    Some(RawUnit {
+        unit,
+        load,
+        active,
+        sub,
+        description,
+    })
 }
 
 pub fn unit_status(name: &str, scope: Scope) -> Result<String> {

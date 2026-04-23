@@ -4,10 +4,18 @@ mod status_panel;
 mod unit_list;
 
 use crate::app::{App, Mode};
-use ratatui::Frame;
+use ratatui::{style::Style, widgets::Block, Frame};
 
 pub fn draw(frame: &mut Frame, app: &mut App) {
     let area = frame.area();
+
+    // Fill background
+    let bg = Block::default().style(
+        Style::default()
+            .bg(app.theme.background)
+            .fg(app.theme.surface),
+    );
+    frame.render_widget(bg, area);
 
     match app.mode {
         Mode::LogView => {
