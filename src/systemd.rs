@@ -81,6 +81,10 @@ impl Action {
             Action::Enable | Action::Disable | Action::Mask | Action::Unmask
         )
     }
+
+    pub fn is_destructive(&self) -> bool {
+        matches!(self, Action::Stop | Action::Disable | Action::Mask)
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -112,11 +116,8 @@ pub fn list_units(scope: Scope) -> Result<Vec<RawUnit>> {
 }
 
 fn parse_unit_line(line: &str) -> Option<RawUnit> {
-    // systemctl --plain output: columns separated by whitespace
-    // UNIT  LOAD  ACTIVE  SUB  DESCRIPTION
     let mut cols = line.split_whitespace();
     let unit = cols.next()?.to_string();
-    // skip bullet/marker prefix if present (e.g. "●")
     let (unit, load) = if unit.starts_with('●') || unit.chars().next()?.is_ascii_punctuation() {
         let load = cols.next()?.to_string();
         (cols.next().unwrap_or(&unit).to_string(), load)
@@ -144,6 +145,21 @@ pub fn unit_status(name: &str, scope: Scope) -> Result<String> {
         .context("failed to run systemctl status")?;
 
     Ok(String::from_utf8_lossy(&output.stdout).into_owned())
+}
+
+pub fn unit_file(name: &str, scope: Scope) -> Result<Vec<String>> {
+    let output = Command::new("systemctl")
+        .args(["cat", "--no-pager", scope.flag(), name])
+        .output()
+        .context("failed to run systemctl cat")?;
+
+    let text = if output.stdout.is_empty() {
+        String::from_utf8_lossy(&output.stderr).into_owned()
+    } else {
+        String::from_utf8_lossy(&output.stdout).into_owned()
+    };
+
+    Ok(text.lines().map(|l| l.to_string()).collect())
 }
 
 pub fn journal_tail(name: &str, scope: Scope, lines: usize) -> Result<Vec<String>> {
@@ -195,4 +211,47 @@ pub fn do_action(action: &Action, name: &str, scope: Scope) -> Result<String> {
     }
 
     Ok(stdout)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn parse_standard_unit_line() {
+        let line = "ssh.service   loaded active running OpenSSH Daemon";
+        let unit = parse_unit_line(line).unwrap();
+        assert_eq!(unit.unit, "ssh.service");
+        assert_eq!(unit.load, "loaded");
+        assert_eq!(unit.active, "active");
+        assert_eq!(unit.sub, "running");
+        assert_eq!(unit.description, "OpenSSH Daemon");
+    }
+
+    #[test]
+    fn parse_line_with_bullet_prefix() {
+        // systemctl sometimes emits a bullet or punctuation prefix
+        let line = "● ssh.service loaded active running OpenSSH Daemon";
+        // The parser should handle this gracefully (may skip or parse)
+        // Just ensure it doesn't panic
+        let _ = parse_unit_line(line);
+    }
+
+    #[test]
+    fn parse_empty_description() {
+        let line = "foo.socket   loaded inactive dead";
+        let unit = parse_unit_line(line).unwrap();
+        assert_eq!(unit.unit, "foo.socket");
+        assert_eq!(unit.description, "");
+    }
+
+    #[test]
+    fn action_destructive_flags() {
+        assert!(Action::Stop.is_destructive());
+        assert!(Action::Disable.is_destructive());
+        assert!(Action::Mask.is_destructive());
+        assert!(!Action::Start.is_destructive());
+        assert!(!Action::Restart.is_destructive());
+        assert!(!Action::Unmask.is_destructive());
+    }
 }

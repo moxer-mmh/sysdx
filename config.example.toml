@@ -3,7 +3,7 @@
 # Any section or key can be omitted — defaults will be used.
 
 [display]
-# Number of journal lines shown in the right pane preview
+# Number of journal lines shown in the log view
 journal_lines = 50
 # Event poll interval in milliseconds (lower = more responsive, higher CPU)
 tick_rate_ms = 250
@@ -13,19 +13,27 @@ show_description = true
 list_width_pct = 40
 # strftime format for journal timestamps
 date_format = "%H:%M:%S"
+# Automatically refresh the unit list every N seconds. 0 = disabled.
+auto_refresh_secs = 0
+# Show a confirmation prompt before destructive actions (stop, disable, mask)
+confirm_destructive = true
 
 [keybinds]
-move_down    = "j"
-move_up      = "k"
-page_down    = "ctrl-d"
-page_up      = "ctrl-u"
-go_top       = "g"
-go_bottom    = "G"
-filter       = "/"
-action_menu  = "enter"
-switch_scope = "tab"
-open_logs    = "l"
-quit         = "q"
+move_down      = "j"
+move_up        = "k"
+page_down      = "ctrl-d"
+page_up        = "ctrl-u"
+go_top         = "g"
+go_bottom      = "G"
+filter         = "/"
+type_filter    = "t"
+action_menu    = "enter"
+switch_scope   = "tab"
+open_logs      = "l"
+open_unit_file = "u"
+refresh        = "r"
+help           = "?"
+quit           = "q"
 
 [colors]
 # All values are hex color strings (#rrggbb).

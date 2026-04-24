@@ -6,9 +6,17 @@ A terminal UI for managing systemd units. Navigate services with vim keybinds, f
 
 - Two-pane layout: unit list on the left, status and journal output on the right
 - Vim navigation: `j/k`, `g/G`, `ctrl-d/u`, `/` fuzzy filter
+- Type filter — cycle through service / socket / timer / target / mount with `t`
 - Toggle between user and system units with `tab`
 - Action menu: start, stop, restart, enable, disable, reload, mask, unmask
-- Full journal log view per unit
+- Confirmation prompt before destructive actions (stop, disable, mask)
+- Full journal log view per unit with live-tail mode (`f` to toggle)
+- Unit file viewer — `u` to view the unit file via `systemctl cat`
+- Auto-refresh the unit list on a configurable interval
+- Manual refresh with `r`
+- Status bar showing mode-sensitive keybind hints and error messages
+- In-app help overlay with `?`
+- Non-blocking async I/O — systemctl calls never freeze the UI
 - Theme via hex colors in config — ANSI fallback inherits your terminal palette automatically
 - All keybinds rebindable in config
 
@@ -57,9 +65,13 @@ sysdx --version    # show version
 | `g` / `G` | Go to top / bottom |
 | `ctrl-d` / `ctrl-u` | Half-page down / up |
 | `/` | Open fuzzy filter |
+| `t` | Cycle type filter (service → socket → timer → …) |
 | `enter` | Open action menu |
 | `tab` | Toggle user ↔ system scope |
-| `l` | View unit journal logs |
+| `l` | View journal logs (`f` to toggle live-tail) |
+| `u` | View unit file (`systemctl cat`) |
+| `r` | Refresh unit list |
+| `?` | Show keybind help |
 | `q` | Quit |
 
 All keybinds are rebindable in `~/.config/sysdx/config.toml`.
@@ -79,23 +91,29 @@ Or create it from scratch — any missing key uses the default value.
 
 ```toml
 [display]
-journal_lines    = 50       # journal lines in right pane preview
-tick_rate_ms     = 250      # event poll interval (ms)
-show_description = true     # show unit description in list
-list_width_pct   = 40       # left pane width % (20–70)
+journal_lines      = 50     # journal lines in log view
+tick_rate_ms       = 250    # event poll interval (ms)
+show_description   = true   # show unit description in list
+list_width_pct     = 40     # left pane width % (20–70)
+auto_refresh_secs  = 0      # auto-refresh interval; 0 = disabled
+confirm_destructive = true  # confirm before stop/disable/mask
 
 [keybinds]
-move_down    = "j"
-move_up      = "k"
-page_down    = "ctrl-d"
-page_up      = "ctrl-u"
-go_top       = "g"
-go_bottom    = "G"
-filter       = "/"
-action_menu  = "enter"
-switch_scope = "tab"
-open_logs    = "l"
-quit         = "q"
+move_down      = "j"
+move_up        = "k"
+page_down      = "ctrl-d"
+page_up        = "ctrl-u"
+go_top         = "g"
+go_bottom      = "G"
+filter         = "/"
+type_filter    = "t"
+action_menu    = "enter"
+switch_scope   = "tab"
+open_logs      = "l"
+open_unit_file = "u"
+refresh        = "r"
+help           = "?"
+quit           = "q"
 
 [colors]
 # Hex strings (#rrggbb). Comment out any key to use terminal ANSI fallback.

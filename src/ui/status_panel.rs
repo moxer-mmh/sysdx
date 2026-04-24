@@ -9,10 +9,8 @@ use ratatui::{
 
 pub fn render(frame: &mut Frame, app: &App, props_area: Rect, journal_area: Rect) {
     let theme = &app.theme;
-
     let entry = app.units.selected_entry();
 
-    // Properties pane
     let props_lines: Vec<Line> = if let Some(e) = entry {
         let label = |k: &str| {
             Span::styled(
@@ -72,7 +70,6 @@ pub fn render(frame: &mut Frame, app: &App, props_area: Rect, journal_area: Rect
 
     frame.render_widget(props_widget, props_area);
 
-    // Journal preview pane
     let journal_lines: Vec<Line> = if app.status_cache.is_empty() {
         vec![Line::from(Span::styled(
             "No output",
@@ -90,8 +87,6 @@ pub fn render(frame: &mut Frame, app: &App, props_area: Rect, journal_area: Rect
             .collect()
     };
 
-    let scroll_pos = app.units.scroll_offset as u16;
-
     let journal_widget = Paragraph::new(journal_lines)
         .block(
             Block::default()
@@ -105,7 +100,6 @@ pub fn render(frame: &mut Frame, app: &App, props_area: Rect, journal_area: Rect
                         .add_modifier(Modifier::BOLD),
                 )),
         )
-        .scroll((scroll_pos, 0))
         .wrap(Wrap { trim: false });
 
     frame.render_widget(journal_widget, journal_area);
@@ -119,6 +113,12 @@ pub fn render_log_view(frame: &mut Frame, app: &App, area: Rect) {
         .map(|e| e.name.as_str())
         .unwrap_or("unknown");
 
+    let live_indicator = if app.log_live { " ● LIVE" } else { "" };
+    let title = format!(
+        " Logs: {}{} (f live-tail  q/esc close) ",
+        entry_name, live_indicator
+    );
+
     let lines: Vec<Line> = if app.journal_cache.is_empty() {
         vec![Line::from(Span::styled(
             "No journal entries found",
@@ -131,14 +131,20 @@ pub fn render_log_view(frame: &mut Frame, app: &App, area: Rect) {
             .collect()
     };
 
+    let border_color = if app.log_live {
+        theme.active
+    } else {
+        theme.border_focused
+    };
+
     let widget = Paragraph::new(lines)
         .block(
             Block::default()
                 .borders(Borders::ALL)
                 .border_type(BorderType::Rounded)
-                .border_style(Style::default().fg(theme.border_focused))
+                .border_style(Style::default().fg(border_color))
                 .title(Span::styled(
-                    format!(" Logs: {} (q/esc to close) ", entry_name),
+                    title,
                     Style::default()
                         .fg(theme.header)
                         .add_modifier(Modifier::BOLD),
@@ -149,6 +155,5 @@ pub fn render_log_view(frame: &mut Frame, app: &App, area: Rect) {
 
     frame.render_widget(widget, area);
 
-    // Only valid when mode is LogView
-    let _ = Mode::LogView;
+    let _ = Mode::LogView; // suppress unused import warning
 }

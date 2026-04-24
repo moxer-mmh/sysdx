@@ -38,3 +38,13 @@ pub fn status_split(status_area: Rect) -> (Rect, Rect) {
         .split(status_area);
     (chunks[0], chunks[1])
 }
+
+/// Carve a 1-row status bar from the bottom of `area`.
+/// Returns (main_area, status_bar).
+pub fn with_status_bar(area: Rect) -> (Rect, Rect) {
+    let chunks = Layout::default()
+        .direction(Direction::Vertical)
+        .constraints([Constraint::Min(1), Constraint::Length(1)])
+        .split(area);
+    (chunks[0], chunks[1])
+}

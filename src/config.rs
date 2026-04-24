@@ -19,6 +19,10 @@ pub struct DisplayOptions {
     pub show_description: bool,
     pub list_width_pct: u16,
     pub date_format: String,
+    /// Seconds between automatic unit list refreshes. 0 = disabled.
+    pub auto_refresh_secs: u64,
+    /// Show a confirmation prompt before destructive actions (stop, disable, mask).
+    pub confirm_destructive: bool,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -35,6 +39,10 @@ pub struct KeyBinds {
     pub switch_scope: String,
     pub open_logs: String,
     pub quit: String,
+    pub refresh: String,
+    pub open_unit_file: String,
+    pub help: String,
+    pub type_filter: String,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize, Default)]
@@ -63,6 +71,8 @@ impl Default for DisplayOptions {
             show_description: true,
             list_width_pct: 40,
             date_format: "%H:%M:%S".to_string(),
+            auto_refresh_secs: 0,
+            confirm_destructive: true,
         }
     }
 }
@@ -81,6 +91,10 @@ impl Default for KeyBinds {
             switch_scope: "tab".to_string(),
             open_logs: "l".to_string(),
             quit: "q".to_string(),
+            refresh: "r".to_string(),
+            open_unit_file: "u".to_string(),
+            help: "?".to_string(),
+            type_filter: "t".to_string(),
         }
     }
 }
@@ -93,7 +107,6 @@ impl Config {
         }
         let raw = std::fs::read_to_string(&path)?;
         let partial: toml::Value = toml::from_str(&raw)?;
-        // Merge: deserialize partial over default so missing keys don't panic
         let merged = merge_with_default(partial)?;
         Ok(merged)
     }
@@ -124,5 +137,35 @@ fn merge_toml(base: &mut toml::Value, override_val: toml::Value) {
                 *entry = v;
             }
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn default_config_has_expected_keybinds() {
+        let cfg = Config::default();
+        assert_eq!(cfg.keybinds.move_down, "j");
+        assert_eq!(cfg.keybinds.refresh, "r");
+        assert_eq!(cfg.keybinds.help, "?");
+        assert_eq!(cfg.keybinds.open_unit_file, "u");
+        assert_eq!(cfg.keybinds.type_filter, "t");
+    }
+
+    #[test]
+    fn partial_toml_merge_preserves_defaults() {
+        let partial: toml::Value = toml::from_str("[display]\ntick_rate_ms = 100").unwrap();
+        let merged = merge_with_default(partial).unwrap();
+        assert_eq!(merged.display.tick_rate_ms, 100);
+        assert_eq!(merged.display.journal_lines, 50); // unchanged default
+        assert!(merged.display.confirm_destructive); // unchanged default
+    }
+
+    #[test]
+    fn auto_refresh_default_is_disabled() {
+        let cfg = Config::default();
+        assert_eq!(cfg.display.auto_refresh_secs, 0);
     }
 }

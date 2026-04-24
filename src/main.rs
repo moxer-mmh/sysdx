@@ -12,7 +12,8 @@ use app::App;
 use config::Config;
 use systemd::Scope;
 
-fn main() -> Result<()> {
+#[tokio::main]
+async fn main() -> Result<()> {
     let args: Vec<String> = std::env::args().collect();
 
     if args.iter().any(|a| a == "--version" || a == "-V") {
@@ -35,7 +36,7 @@ fn main() -> Result<()> {
     let app = App::new(config, scope);
 
     let mut terminal = ratatui::init();
-    let result = app.run(&mut terminal);
+    let result = app.run(&mut terminal).await;
     ratatui::restore();
 
     result
@@ -59,9 +60,13 @@ KEYBINDS (defaults):
     g/G         Go to top/bottom
     ctrl-d/u    Half-page down/up
     /           Fuzzy filter
+    t           Cycle type filter (service/socket/timer…)
     enter       Open action menu
     tab         Toggle user/system scope
-    l           View journal logs
+    l           View journal logs (f to toggle live-tail)
+    u           View unit file (systemctl cat)
+    r           Refresh unit list
+    ?           Show keybind help
     q           Quit
 
 CONFIG:

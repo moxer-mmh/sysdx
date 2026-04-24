@@ -43,7 +43,6 @@ pub struct UnitList {
     pub entries: Vec<UnitEntry>,
     pub scope: Scope,
     pub selected: usize,
-    pub scroll_offset: usize,
     pub last_error: Option<String>,
 }
 
@@ -53,7 +52,6 @@ impl UnitList {
             entries: Vec::new(),
             scope,
             selected: 0,
-            scroll_offset: 0,
             last_error: None,
         }
     }
@@ -63,7 +61,6 @@ impl UnitList {
             Ok(raw_units) => {
                 self.entries = raw_units.into_iter().map(UnitEntry::from_raw).collect();
                 self.last_error = None;
-                // clamp selection to valid range
                 if self.selected >= self.entries.len() && !self.entries.is_empty() {
                     self.selected = self.entries.len() - 1;
                 }
@@ -71,6 +68,14 @@ impl UnitList {
             Err(e) => {
                 self.last_error = Some(e.to_string());
             }
+        }
+    }
+
+    pub fn apply_units(&mut self, raw_units: Vec<RawUnit>) {
+        self.entries = raw_units.into_iter().map(UnitEntry::from_raw).collect();
+        self.last_error = None;
+        if self.selected >= self.entries.len() && !self.entries.is_empty() {
+            self.selected = self.entries.len() - 1;
         }
     }
 
@@ -142,13 +147,13 @@ impl UnitList {
         self.entries.get(self.selected)
     }
 
+    // Switch scope without blocking refresh — caller must spawn async refresh
     pub fn switch_scope(&mut self) {
         self.scope = match self.scope {
             Scope::User => Scope::System,
             Scope::System => Scope::User,
         };
         self.selected = 0;
-        self.scroll_offset = 0;
-        self.refresh();
+        self.entries.clear();
     }
 }
