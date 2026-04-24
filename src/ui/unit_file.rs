@@ -34,17 +34,11 @@ pub fn render(frame: &mut Frame, app: &App, area: Rect) {
                     ))
                 } else if let Some((key, val)) = l.split_once('=') {
                     Line::from(vec![
-                        Span::styled(
-                            format!("{}=", key),
-                            Style::default().fg(theme.text_dim),
-                        ),
+                        Span::styled(format!("{}=", key), Style::default().fg(theme.text_dim)),
                         Span::styled(val.to_string(), Style::default().fg(theme.text)),
                     ])
                 } else {
-                    Line::from(Span::styled(
-                        l.clone(),
-                        Style::default().fg(theme.text_dim),
-                    ))
+                    Line::from(Span::styled(l.clone(), Style::default().fg(theme.text_dim)))
                 }
             })
             .collect()

@@ -12,9 +12,23 @@ pub fn render(frame: &mut Frame, app: &App) {
     let area = centered_rect(58, 26, frame.area());
 
     let kb = &app.config.keybinds;
-    let key = |k: &str| Span::styled(format!("{:<12}", k), Style::default().fg(theme.header).add_modifier(Modifier::BOLD));
+    let key = |k: &str| {
+        Span::styled(
+            format!("{:<12}", k),
+            Style::default()
+                .fg(theme.header)
+                .add_modifier(Modifier::BOLD),
+        )
+    };
     let desc = |d: &str| Span::styled(d.to_string(), Style::default().fg(theme.text));
-    let section = |s: &str| Line::from(Span::styled(s.to_string(), Style::default().fg(theme.text_dim).add_modifier(Modifier::BOLD)));
+    let section = |s: &str| {
+        Line::from(Span::styled(
+            s.to_string(),
+            Style::default()
+                .fg(theme.text_dim)
+                .add_modifier(Modifier::BOLD),
+        ))
+    };
 
     let lines = vec![
         section("Navigation"),
@@ -27,16 +41,28 @@ pub fn render(frame: &mut Frame, app: &App) {
         Line::from(""),
         section("Search & Filter"),
         Line::from(vec![key(&kb.filter), desc("Open fuzzy filter")]),
-        Line::from(vec![key(&kb.type_filter), desc("Cycle type filter  (service/socket/timer…)")]),
+        Line::from(vec![
+            key(&kb.type_filter),
+            desc("Cycle type filter  (service/socket/timer…)"),
+        ]),
         Line::from(""),
         section("Actions"),
         Line::from(vec![key(&kb.action_menu), desc("Open action menu")]),
-        Line::from(vec![key(&kb.switch_scope), desc("Toggle user ↔ system scope")]),
+        Line::from(vec![
+            key(&kb.switch_scope),
+            desc("Toggle user ↔ system scope"),
+        ]),
         Line::from(vec![key(&kb.refresh), desc("Refresh unit list")]),
         Line::from(""),
         section("Views"),
-        Line::from(vec![key(&kb.open_logs), desc("Journal logs  (f = live-tail)")]),
-        Line::from(vec![key(&kb.open_unit_file), desc("Unit file  (systemctl cat)")]),
+        Line::from(vec![
+            key(&kb.open_logs),
+            desc("Journal logs  (f = live-tail)"),
+        ]),
+        Line::from(vec![
+            key(&kb.open_unit_file),
+            desc("Unit file  (systemctl cat)"),
+        ]),
         Line::from(vec![key(&kb.help), desc("This help screen")]),
         Line::from(""),
         section("General"),
@@ -46,17 +72,18 @@ pub fn render(frame: &mut Frame, app: &App) {
 
     frame.render_widget(Clear, area);
 
-    let widget = Paragraph::new(lines)
-        .block(
-            Block::default()
-                .borders(Borders::ALL)
-                .border_type(BorderType::Rounded)
-                .border_style(Style::default().fg(theme.border_focused))
-                .title(Span::styled(
-                    " Keybinds ",
-                    Style::default().fg(theme.header).add_modifier(Modifier::BOLD),
-                )),
-        );
+    let widget = Paragraph::new(lines).block(
+        Block::default()
+            .borders(Borders::ALL)
+            .border_type(BorderType::Rounded)
+            .border_style(Style::default().fg(theme.border_focused))
+            .title(Span::styled(
+                " Keybinds ",
+                Style::default()
+                    .fg(theme.header)
+                    .add_modifier(Modifier::BOLD),
+            )),
+    );
 
     frame.render_widget(widget, area);
 }

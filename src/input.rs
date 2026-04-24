@@ -66,21 +66,51 @@ pub fn handle_key(event: KeyEvent, binds: &KeyBinds, mode: &crate::app::Mode) ->
 fn handle_normal_key(event: KeyEvent, binds: &KeyBinds) -> AppAction {
     let key_str = key_to_string(event);
 
-    if key_str == binds.quit { return AppAction::Quit; }
-    if key_str == binds.move_down { return AppAction::MoveDown; }
-    if key_str == binds.move_up { return AppAction::MoveUp; }
-    if key_str == binds.page_down { return AppAction::PageDown; }
-    if key_str == binds.page_up { return AppAction::PageUp; }
-    if key_str == binds.go_bottom { return AppAction::GoBottom; }
-    if key_str == binds.go_top { return AppAction::GoTop; }
-    if key_str == binds.filter { return AppAction::OpenFilter; }
-    if key_str == binds.action_menu { return AppAction::OpenActionMenu; }
-    if key_str == binds.switch_scope { return AppAction::SwitchScope; }
-    if key_str == binds.open_logs { return AppAction::OpenLogs; }
-    if key_str == binds.refresh { return AppAction::Refresh; }
-    if key_str == binds.open_unit_file { return AppAction::OpenUnitFile; }
-    if key_str == binds.help { return AppAction::OpenHelp; }
-    if key_str == binds.type_filter { return AppAction::FilterType; }
+    if key_str == binds.quit {
+        return AppAction::Quit;
+    }
+    if key_str == binds.move_down {
+        return AppAction::MoveDown;
+    }
+    if key_str == binds.move_up {
+        return AppAction::MoveUp;
+    }
+    if key_str == binds.page_down {
+        return AppAction::PageDown;
+    }
+    if key_str == binds.page_up {
+        return AppAction::PageUp;
+    }
+    if key_str == binds.go_bottom {
+        return AppAction::GoBottom;
+    }
+    if key_str == binds.go_top {
+        return AppAction::GoTop;
+    }
+    if key_str == binds.filter {
+        return AppAction::OpenFilter;
+    }
+    if key_str == binds.action_menu {
+        return AppAction::OpenActionMenu;
+    }
+    if key_str == binds.switch_scope {
+        return AppAction::SwitchScope;
+    }
+    if key_str == binds.open_logs {
+        return AppAction::OpenLogs;
+    }
+    if key_str == binds.refresh {
+        return AppAction::Refresh;
+    }
+    if key_str == binds.open_unit_file {
+        return AppAction::OpenUnitFile;
+    }
+    if key_str == binds.help {
+        return AppAction::OpenHelp;
+    }
+    if key_str == binds.type_filter {
+        return AppAction::FilterType;
+    }
 
     AppAction::None
 }
@@ -190,14 +220,23 @@ mod tests {
 
     #[test]
     fn confirm_y_accepts() {
-        assert_eq!(handle_confirm_key(key(KeyCode::Char('y'))), AppAction::ConfirmYes);
-        assert_eq!(handle_confirm_key(key(KeyCode::Char('Y'))), AppAction::ConfirmYes);
+        assert_eq!(
+            handle_confirm_key(key(KeyCode::Char('y'))),
+            AppAction::ConfirmYes
+        );
+        assert_eq!(
+            handle_confirm_key(key(KeyCode::Char('Y'))),
+            AppAction::ConfirmYes
+        );
     }
 
     #[test]
     fn confirm_esc_cancels() {
         assert_eq!(handle_confirm_key(key(KeyCode::Esc)), AppAction::ConfirmNo);
-        assert_eq!(handle_confirm_key(key(KeyCode::Char('n'))), AppAction::ConfirmNo);
+        assert_eq!(
+            handle_confirm_key(key(KeyCode::Char('n'))),
+            AppAction::ConfirmNo
+        );
     }
 
     #[test]

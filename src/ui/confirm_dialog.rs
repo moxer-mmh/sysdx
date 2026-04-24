@@ -26,7 +26,12 @@ pub fn render(frame: &mut Frame, app: &App) {
     let lines = vec![
         Line::from(vec![
             Span::styled("Action:  ", Style::default().fg(theme.text_dim)),
-            Span::styled(action.label(), Style::default().fg(theme.failed).add_modifier(Modifier::BOLD)),
+            Span::styled(
+                action.label(),
+                Style::default()
+                    .fg(theme.failed)
+                    .add_modifier(Modifier::BOLD),
+            ),
         ]),
         Line::from(vec![
             Span::styled("Unit:    ", Style::default().fg(theme.text_dim)),
@@ -35,23 +40,26 @@ pub fn render(frame: &mut Frame, app: &App) {
         Line::from(""),
         Line::from(Span::styled(
             "  y  confirm      n / esc  cancel",
-            Style::default().fg(theme.header).add_modifier(Modifier::BOLD),
+            Style::default()
+                .fg(theme.header)
+                .add_modifier(Modifier::BOLD),
         )),
     ];
 
     frame.render_widget(Clear, area);
 
-    let widget = Paragraph::new(lines)
-        .block(
-            Block::default()
-                .borders(Borders::ALL)
-                .border_type(BorderType::Rounded)
-                .border_style(Style::default().fg(theme.failed))
-                .title(Span::styled(
-                    " Confirm ",
-                    Style::default().fg(theme.failed).add_modifier(Modifier::BOLD),
-                )),
-        );
+    let widget = Paragraph::new(lines).block(
+        Block::default()
+            .borders(Borders::ALL)
+            .border_type(BorderType::Rounded)
+            .border_style(Style::default().fg(theme.failed))
+            .title(Span::styled(
+                " Confirm ",
+                Style::default()
+                    .fg(theme.failed)
+                    .add_modifier(Modifier::BOLD),
+            )),
+    );
 
     frame.render_widget(widget, area);
 }

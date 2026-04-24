@@ -76,7 +76,13 @@ pub fn draw(frame: &mut Frame, app: &mut App) {
 
 fn render_status_bar(frame: &mut Frame, app: &App, area: ratatui::layout::Rect) {
     let text = app.status_bar_text();
-    let color = if app.units.last_error.is_some() || app.status_message.as_ref().map(|m| m.starts_with("Error")).unwrap_or(false) {
+    let color = if app.units.last_error.is_some()
+        || app
+            .status_message
+            .as_ref()
+            .map(|m| m.starts_with("Error"))
+            .unwrap_or(false)
+    {
         app.theme.failed
     } else if app.status_message.is_some() {
         app.theme.active

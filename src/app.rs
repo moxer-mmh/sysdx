@@ -2,7 +2,9 @@ use crate::{
     config::Config,
     filter,
     input::{handle_key, AppAction},
-    systemd::{do_action, journal_tail, list_units, unit_file, unit_status, Action, RawUnit, Scope},
+    systemd::{
+        do_action, journal_tail, list_units, unit_file, unit_status, Action, RawUnit, Scope,
+    },
     theme::Theme,
     units::UnitList,
 };
@@ -262,8 +264,7 @@ impl App {
                 };
             }
             AppAction::ActionDown => {
-                self.action_menu_selected =
-                    (self.action_menu_selected + 1) % Action::all().len();
+                self.action_menu_selected = (self.action_menu_selected + 1) % Action::all().len();
             }
             AppAction::ActionConfirm => {
                 self.maybe_confirm_or_execute();
@@ -357,14 +358,12 @@ impl App {
             let scope = self.units.scope;
             let label = action.label().to_string();
             let tx = self.tx.clone();
-            tokio::task::spawn_blocking(move || {
-                match do_action(&action, &name, scope) {
-                    Ok(_) => {
-                        let _ = tx.send(BgMsg::ActionDone { label, unit: name });
-                    }
-                    Err(e) => {
-                        let _ = tx.send(BgMsg::ActionError(e.to_string()));
-                    }
+            tokio::task::spawn_blocking(move || match do_action(&action, &name, scope) {
+                Ok(_) => {
+                    let _ = tx.send(BgMsg::ActionDone { label, unit: name });
+                }
+                Err(e) => {
+                    let _ = tx.send(BgMsg::ActionError(e.to_string()));
                 }
             });
         }
@@ -387,8 +386,7 @@ impl App {
         self.visible_indices =
             filter::rank(&self.filter_query, &self.units.entries, &type_filtered);
 
-        if !self.visible_indices.is_empty()
-            && !self.visible_indices.contains(&self.units.selected)
+        if !self.visible_indices.is_empty() && !self.visible_indices.contains(&self.units.selected)
         {
             self.units.selected = self.visible_indices[0];
             self.spawn_refresh_status();
@@ -484,4 +482,3 @@ impl App {
         }
     }
 }
-
